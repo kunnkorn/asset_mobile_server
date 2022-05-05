@@ -12,7 +12,7 @@ app.use(express.urlencoded({extended: true}));
 app.post('/getitem' , (req , res) => {
     const {inventorynumber} = req.body;
 
-    const sql = 'SELECT item.Inventory_Number, item.Asset_Description, item.Location, item.Room, item.Status, item.Year FROM item WHERE item.Inventory_Number = ? AND item.Year = YEAR(CURDATE());'
+    const sql = 'SELECT item.Inventory_Number, item.Asset_Description, item.Location, item.Room, item.Status, item.Year, DATEDIFF(date_check.Date_end , CURRENT_DATE()) AS DATEDIFFS FROM item , date_check WHERE item.Inventory_Number = ? AND item.Year = YEAR(CURDATE()) AND date_check.Years = YEAR(CURDATE()) GROUP BY item.Year = YEAR(CURDATE());'
     con.query(sql , [inventorynumber] , function(err ,result){
         if(err){
             console.log(err)
@@ -38,6 +38,21 @@ app.post('/updateitem' , (req , res) => {
         }
       });
 });
+
+app.get('/status' , (req , res) => {
+    const sql = 'SELECT COUNT(item.Inventory_Number) AS Item_Status FROM item WHERE item.Year = YEAR(CURDATE()) GROUP BY item.Status;'
+    con.query(sql , function(err ,result) {
+        if(err){
+            console.log(err)
+            res.status(500).send('DB Error')
+        }
+        else{
+            res.send(result);
+        }
+    })
+})
+
+
 
 PORT = 3000;
 app.listen(PORT, function () { 
