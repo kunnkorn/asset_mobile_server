@@ -1,7 +1,7 @@
 const config = {
     host : 'localhost',
     user : 'inventory',
-    password : '.lUS6!opw.spShxa',
+    password : 'G2-!CJftSJe(a0E)',
     database : 'itinventory'
 };
 
